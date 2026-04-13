@@ -1,0 +1,17 @@
+eval_name: security-scanner
+description: "Evaluates the security scanner skill's rule enforcement mechanisms"
+assertions:
+  - type: "dependency-versions"
+    description: "Scanner MUST ensure dependency audits test against pinned versions rather than simply fetching 'latest'"
+    enforce:
+      FastAPI: "0.115.x"
+      React: "18.x"
+  - type: "documentation-style"
+    description: "Scanner MUST ensure security configurations are properly documented using docstrings explaining 'why'"
+    check_type: "auth_docstring_verification"
+  - type: "dead-code-prevention"
+    description: "Scanner MUST flag any dead code or console/print statements that could potentially leak secrets"
+    forbidden:
+      - "print("
+      - "console.log("
+      - "console.error("

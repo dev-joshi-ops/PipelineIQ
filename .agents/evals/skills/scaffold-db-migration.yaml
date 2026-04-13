@@ -1,0 +1,16 @@
+eval_name: scaffold-db-migration
+description: "Evaluates database migration scaffolding against agents.md structural rules"
+assertions:
+  - type: "dependency-versions"
+    description: "Migration scripts MUST strictly import pinned database tools"
+    enforce:
+      SQLAlchemy: "2.0.x"
+      Alembic: "1.13.x"
+  - type: "documentation-style"
+    description: "Migration scripts MUST include descriptive docstrings detailing the schema changes"
+    regex_check: '"""[\s\S]*?(Upgrade:|Downgrade:)[\s\S]*?"""'
+  - type: "dead-code-prevention"
+    description: "Migration scripts MUST NOT include print statements or dead code debug runs"
+    forbidden:
+      - "print("
+      - "# TODO: "

@@ -1,0 +1,16 @@
+eval_name: performance-profiler
+description: "Evaluates the profiling skill for compliance with agents.md policies"
+assertions:
+  - type: "dependency-versions"
+    description: "Profiler MUST validate and report performance metrics against the pinned runtime environments only"
+    enforce:
+      Node.js: "20.x LTS"
+      Python: "3.11.x | 3.12.x"
+  - type: "documentation-style"
+    description: "Profiler generated reports MUST be clearly documented and readable, ensuring code has docstrings where bottlenecks are found"
+    check_type: "docstring_gap_analysis"
+  - type: "dead-code-prevention"
+    description: "Profiler injection scripts MUST NOT leave trailing print() or dead trace code after execution"
+    forbidden:
+      - "print("
+      - "console.log("

@@ -1,0 +1,18 @@
+eval_name: scaffold-backend-endpoint
+description: "Evaluates standard backend endpoint scaffolding against agents.md directives"
+assertions:
+  - type: "dependency-versions"
+    description: "MUST strictly use exact pinned versions from Supported Version Matrix"
+    enforce:
+      FastAPI: "0.115.x"
+      Pydantic: "2.x"
+      SQLAlchemy: "2.0.x"
+  - type: "documentation-style"
+    description: "Generated backend code MUST use Google-style docstrings for all functions and classes"
+    regex_check: '"""[\s\S]*?(Args:|Returns:|Raises:)[\s\S]*?"""'
+  - type: "dead-code-prevention"
+    description: "Generated code MUST NOT contain any dead code or debug statements"
+    forbidden:
+      - "print("
+      - "# TODO: "
+      - "# commented out code"

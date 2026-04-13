@@ -1,0 +1,16 @@
+eval_name: codebase-scout
+description: "Evaluates the codebase mapping tool against architecture constraints"
+assertions:
+  - type: "dependency-versions"
+    description: "Scout MUST correctly map findings against the supported versions without suggesting latest unpinned upgrades"
+    enforce:
+      Python: "3.11.x | 3.12.x"
+      Node.js: "20.x LTS"
+  - type: "documentation-style"
+    description: "Scout MUST correctly identify missing Google-style docstrings in codebase areas"
+    check_type: "docstring_gap_analysis"
+  - type: "dead-code-prevention"
+    description: "Scout MUST log areas of the codebase littered with dead code such as print/console statements"
+    forbidden:
+      - "print("
+      - "console.log("

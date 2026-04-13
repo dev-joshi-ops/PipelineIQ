@@ -1,0 +1,75 @@
+# ===========================
+# .agentignore
+# ===========================
+# Files and directories that AI coding assistants should NOT index
+# or include in their context window.
+
+# ===========================
+# Dependencies
+# ===========================
+.venv/
+venv/
+env/
+
+# ===========================
+# Build Artifacts
+# ===========================
+build/
+*.egg-info/
+dist/
+
+# ===========================
+# Python Cache
+# ===========================
+__pycache__/
+*.pyc
+*.pyo
+.mypy_cache/
+.ruff_cache/
+
+# ===========================
+# Test & Coverage Reports
+# ===========================
+htmlcov/
+coverage/
+.coverage
+.coverage.*
+.pytest_cache/
+
+# ===========================
+# Environment & Secrets
+# ===========================
+.env
+.env.*
+!.env.example
+
+# ===========================
+# IDE / Editor
+# ===========================
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# ===========================
+# Git
+# ===========================
+.git/
+
+# ===========================
+# Legacy AI Assets / Non-Canonical Scaffolding
+# ===========================
+.agents/evals/
+.agents/prompts/
+.agents/rules/react-rules.md
+.agents/rules/fastapi-rules.md
+.agents/skills/scaffold-backend-endpoint/
+.agents/skills/scaffold-frontend-component/
+.agents/skills/scaffold-db-migration/
+
+# ===========================
+# OS Files
+# ===========================
+.DS_Store
+Thumbs.db
+Desktop.ini

@@ -1,0 +1,358 @@
+{
+  "patterns": [
+    {
+      "pattern_id": "LIFERAY_OSGI_UNRESOLVED",
+      "label": "Liferay OSGi Unresolved Constraint",
+      "regex": "Org\\.osgi\\.framework\\.BundleException: Could not resolve module:*|Unresolved constraint in bundle.*",
+      "confidence": "high",
+      "summary": "An OSGi bundle failed to start or resolve due to missing dependencies or version mismatches.",
+      "suggestions": [
+        {
+          "title": "Check Gogo Shell Diagnostic",
+          "description": "The OSGi container is missing a required package or bundle.",
+          "manual_steps": [
+            "Identify the missing package from the error message (e.g. 'Import-Package: com.liferay.portal.kernel').",
+            "Verify the version range in `bnd.bnd` matches the versions available in the portal.",
+            "Run `diag <bundle-id>` in the Liferay Gogo shell to see specific missing requirements."
+          ]
+        }
+      ]
+    },
+    {
+      "pattern_id": "BLADE_DEPLOY_FAILURE",
+      "label": "Blade Deploy Failure",
+      "regex": "Error: blade deploy failed|blade server start failed",
+      "confidence": "high",
+      "summary": "Liferay Blade CLI failed to deploy a bundle or manage the server process.",
+      "suggestions": [
+        {
+          "title": "Clean and Deploy",
+          "description": "The deployment environment might be in an inconsistent state.",
+          "manual_steps": [
+            "Verify the Liferay server is running and accessible.",
+            "Run `./gradlew clean deploy` or `blade deploy` again.",
+            "Check for file path issues in `blade.properties`."
+          ]
+        }
+      ]
+    },
+    {
+      "pattern_id": "JAVA_CLASS_NOT_FOUND",
+      "label": "Java Class/Method Not Found",
+      "regex": "java\\.lang\\.ClassNotFoundException|java\\.lang\\.NoClassDefFoundError|java\\.lang\\.NoSuchMethodError",
+      "confidence": "high",
+      "summary": "A fatal Java runtime error indicating that a class or method present at compile time is missing at runtime (Dependency Conflict).",
+      "suggestions": [
+        {
+          "title": "Audit Dependency Tree",
+          "description": "Multiple versions of the same library might be present in the classpath.",
+          "manual_steps": [
+            "Identify the library providing the missing class.",
+            "Run `mvn dependency:tree` or `./gradlew dependencies`.",
+            "Exclude conflicting transitive dependencies in `pom.xml` or `build.gradle`."
+          ]
+        }
+      ]
+    },
+    {
+      "pattern_id": "SPRING_BEAN_CREATION_FAIL",
+      "label": "Spring Bean Creation Failure",
+      "regex": "org\\.springframework\\.beans\\.factory\\.BeanCreationException|Error creating bean with name",
+      "confidence": "high",
+      "summary": "Spring Boot failed to initialize one or more beans, often due to missing configuration or circular dependencies.",
+      "suggestions": [
+        {
+          "title": "Verify Configuration Properties",
+          "description": "Check if all required `@Value` or `@ConfigurationProperties` are provided.",
+          "manual_steps": [
+            "Look for 'Unsatisfied dependency expressed' in the logs to find the root cause.",
+            "Ensure the database or external service is reachable if the bean is a DAO/Repository.",
+            "Check `application.properties` or `application.yml` for missing keys."
+          ]
+        }
+      ]
+    },
+    {
+      "pattern_id": "ESLINT_ERROR",
+      "label": "ESLint Quality Failure",
+      "regex": "\\d+ errors found \\(\\d+ errors potentially fixable with the `--fix` option\\)",
+      "confidence": "high",
+      "summary": "The build was blocked by linting violations.",
+      "suggestions": [
+        {
+          "title": "Run Lint Fix",
+          "description": "Some or all errors can be automatically corrected by ESLint.",
+          "manual_steps": [
+            "Run `npm run lint -- --fix` or `yarn lint --fix` locally.",
+            "Review any remaining manual errors and fix them following the project's style guide."
+          ]
+        }
+      ]
+    },
+    {
+      "pattern_id": "REACT_HYDRATION_MISMATCH",
+      "label": "React Hydration Error",
+      "regex": "Hydration failed because the initial UI does not match what was rendered on the server",
+      "confidence": "medium",
+      "summary": "In Next.js or SSR React applications, the client-side render differs from the server-side HTML.",
+      "suggestions": [
+        {
+          "title": "Identify Non-Deterministic Logic",
+          "description": "Often caused by using `window`, `localStorage`, or random numbers during the initial render.",
+          "manual_steps": [
+            "Ensure components use `useEffect` for client-only logic.",
+            "Check for mismatched HTML tags (e.g. `p` inside `p`).",
+            "Use a tool like `react-hydration-on-demand` to debug specific components."
+          ]
+        }
+      ]
+    },
+    {
+      "pattern_id": "VITE_BUILD_ERROR",
+      "label": "Vite/Webpacker Compilation Error",
+      "regex": "error within .* during Vite .* build|failed to compile with \\d+ errors",
+      "confidence": "high",
+      "summary": "Frontend assets failed to compile, likely due to syntax errors or missing modules.",
+      "suggestions": [
+        {
+          "title": "Clear Build Cache",
+          "description": "Corruption in the `.vite` or `node_modules/.cache` directory can cause persistent failures.",
+          "manual_steps": [
+            "Delete the `node_modules` and `dist`/`build` folders.",
+            "Run `npm install` and `npm run build` again.",
+            "Check for broken imports or missing `.jsx`/`.tsx` extensions."
+          ]
+        }
+      ]
+    },
+    {
+      "pattern_id": "PYTHON_IMPORT_ERROR",
+      "label": "Python Import/Module Error",
+      "regex": "ImportError: No module named .*|ModuleNotFoundError: No module named .*",
+      "confidence": "high",
+      "summary": "Python was unable to import a required module, usually because it's not installed in the virtual environment.",
+      "suggestions": [
+        {
+          "title": "Update Requirements",
+          "description": "Ensure `requirements.txt` or `pyproject.toml` is up to date and all packages are installed.",
+          "manual_steps": [
+            "Verify the package is in `requirements.txt`.",
+            "Run `pip install -r requirements.txt`.",
+            "Check for typos in the import statement or module name."
+          ]
+        }
+      ]
+    },
+    {
+      "pattern_id": "DJANGO_MIGRATION_ERROR",
+      "label": "Django Migration Conflict",
+      "regex": "django\\.db\\.utils\\.OperationalError: .*|django\\.db\\.migrations\\.exceptions\\.InconsistentMigrationHistory",
+      "confidence": "high",
+      "summary": "Django failed to apply database migrations, often due to a schema mismatch or inconsistent migration state.",
+      "suggestions": [
+        {
+          "title": "Inspect Migration State",
+          "description": "The database schema might be out of sync with the codebase.",
+          "manual_steps": [
+            "Run `python manage.py makemigrations --merge` if there are conflicting branches.",
+            "Run `python manage.py migrate --show-status` to see which migrations have been applied.",
+            "As a last resort, manually resolve the state in the `django_migrations` table."
+          ]
+        }
+      ]
+    },
+    {
+      "pattern_id": "FASTAPI_PYDANTIC_ERROR",
+      "label": "FastAPI/Pydantic Validation Error",
+      "regex": "pydantic_core\\._pydantic_core\\.ValidationError: \\d+ validation errors for .*",
+      "confidence": "high",
+      "summary": "FastAPI failed to start or validate a request because the data did not match the Pydantic schema.",
+      "suggestions": [
+        {
+          "title": "Check Environment Variables or Request Body",
+          "description": "Commonly occurs during startup if environment variables are missing.",
+          "manual_steps": [
+            "Review the list of missing fields in the validation error.",
+            "Ensure the `.env` file or environment has all required keys.",
+            "Check if the request payload matches the model definition in `schemas.py`."
+          ]
+        }
+      ]
+    },
+    {
+      "pattern_id": "JAVA_COMPILE_ERROR",
+      "label": "Java Compilation Failure",
+      "regex": "^.+\\.java:\\d+: error: .+",
+      "confidence": "high",
+      "summary": "One or more Java source files failed to compile. Common causes include syntax errors, missing imports, or incompatible API changes.",
+      "suggestions": [
+        {
+          "title": "Check compiler error lines in the log",
+          "description": "Identify the specific file and line number from the error message and open the source file to inspect the issue.",
+          "manual_steps": [
+            "Search the log for lines matching the compiler error pattern.",
+            "Open the indicated source file at the reported line number.",
+            "Correct the syntax error, missing import, or type mismatch."
+          ]
+        }
+      ]
+    },
+    {
+      "pattern_id": "MAVEN_DEPENDENCY_ERROR",
+      "label": "Maven Dependency Resolution Failure",
+      "regex": "\\[ERROR\\] Failed to execute goal .* on project .*: Could not resolve dependencies",
+      "confidence": "high",
+      "summary": "Maven was unable to resolve one or more project dependencies.",
+      "suggestions": [
+        {
+          "title": "Verify dependency coordinates",
+          "description": "Ensure the artifact exists and the network can reach the repository.",
+          "manual_steps": [
+            "Check `pom.xml` for typos.",
+            "Run `mvn clean install -U` locally.",
+            "Check for proxy/firewall issues."
+          ]
+        }
+      ]
+    },
+    {
+      "pattern_id": "GRADLE_BUILD_FAILURE",
+      "label": "Gradle Build Failure",
+      "regex": "> Task .* FAILED",
+      "confidence": "medium",
+      "summary": "A Gradle task failed to execute correctly.",
+      "suggestions": [
+        {
+          "title": "Inspect task output",
+          "description": "Review the specific failure message associated with the failed Gradle task.",
+          "manual_steps": [
+            "Search the log for the specific task name that failed.",
+            "Run `./gradlew <task-name> --stacktrace` locally to get more detail."
+          ]
+        }
+      ]
+    },
+    {
+      "pattern_id": "NPM_INSTALL_ERROR",
+      "label": "npm/yarn Dependency Error",
+      "regex": "npm ERR! .+|error Combined compiled stacktrace|yarn error .+",
+      "confidence": "high",
+      "summary": "A Node.js dependency installation or build step failed.",
+      "suggestions": [
+        {
+          "title": "Clear node_modules and retry",
+          "description": "Often caused by inconsistent state or registry connectivity issues.",
+          "manual_steps": [
+            "Verify `package.json` syntax.",
+            "Run `npm cache clean --force` and retry.",
+            "Check for lockfile conflicts."
+          ]
+        }
+      ]
+    },
+    {
+      "pattern_id": "DOCKER_BUILD_FAILURE",
+      "label": "Docker Build Failure",
+      "regex": "The command '/bin/sh -c .*' returned a non-zero code: \\d+",
+      "confidence": "high",
+      "summary": "A command inside the Dockerfile failed to execute.",
+      "suggestions": [
+        {
+          "title": "Debug Dockerfile layer",
+          "description": "The specific instruction in the Dockerfile is failing.",
+          "manual_steps": [
+            "Identify which RUN command failed.",
+            "Try to run the base image locally and execute the command interactively."
+          ]
+        }
+      ]
+    },
+    {
+      "pattern_id": "OUT_OF_MEMORY",
+      "label": "Out of Memory (OOM) Kill",
+      "regex": "java.lang.OutOfMemoryError|Killed|exit code 137",
+      "confidence": "high",
+      "summary": "The process was terminated because it exceeded memory limits or the JVM ran out of heap space.",
+      "suggestions": [
+        {
+          "title": "Increase Resource Limits",
+          "description": "Allocate more memory to the Jenkins agent or the JVM process.",
+          "manual_steps": [
+            "Increase `-Xmx` heap size for JVM processes.",
+            "Adjust container memory limits in the Jenkinsfile/Pod definition."
+          ]
+        }
+      ]
+    },
+    {
+      "pattern_id": "TIMEOUT_FAILURE",
+      "label": "Build/Task Timeout",
+      "regex": "Aborted by .*|Terminated after \\d+ ms|Build timed out",
+      "confidence": "high",
+      "summary": "The build or a specific stage exceeded the configured timeout limit.",
+      "suggestions": [
+        {
+          "title": "Investigate Hanging Processes",
+          "description": "Identify if a process is hanging or if the timeout limit is too restrictive.",
+          "manual_steps": [
+            "Check for infinite loops in tests.",
+            "Identify slow network operations.",
+            "Increase the timeout limit in the pipeline definition if necessary."
+          ]
+        }
+      ]
+    },
+    {
+      "pattern_id": "PERMISSION_DENIED",
+      "label": "Permission Denied / Access Denied",
+      "regex": "Permission denied|Access is denied|EACCES",
+      "confidence": "high",
+      "summary": "The Jenkins process lacks necessary permissions to read/write a file or execute a command.",
+      "suggestions": [
+        {
+          "title": "Check File/Directory Permissions",
+          "description": "Verify the Jenkins user has the correct UID/GID permissions.",
+          "manual_steps": [
+            "Check `ls -l` on the affected path.",
+            "Ensure the Jenkins agent is running as the expected user."
+          ]
+        }
+      ]
+    },
+    {
+      "pattern_id": "DISK_FULL",
+      "label": "No Space Left on Device",
+      "regex": "No space left on device|Disk full|ENOSPC",
+      "confidence": "high",
+      "summary": "The Jenkins agent or the underlying host has run out of disk space.",
+      "suggestions": [
+        {
+          "title": "Clean Workspace and Temporary Files",
+          "description": "Free up space on the agent or scale the disk.",
+          "manual_steps": [
+            "Wipe out the Jenkins workspace.",
+            "Check `/tmp` and `/var/log` for large files.",
+            "Prune unused Docker images/volumes: `docker system prune`."
+          ]
+        }
+      ]
+    },
+    {
+      "pattern_id": "TEST_FAILURE",
+      "label": "Automated Test Failure",
+      "regex": "Tests run: \\d+, Failures: [1-9]\\d*|FAILED \\(failures=\\d+\\)|[1-9]\\d* failed, .* passed",
+      "confidence": "high",
+      "summary": "One or more automated tests failed.",
+      "suggestions": [
+        {
+          "title": "Inspect Test Reports",
+          "description": "Review the test results to identify the failing test cases.",
+          "manual_steps": [
+            "Check JUnit/TestNG/pytest reports.",
+            "Look for stacktraces in the console output below the failure summary."
+          ]
+        }
+      ]
+    }
+  ]
+}

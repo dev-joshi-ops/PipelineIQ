@@ -1,0 +1,16 @@
+eval_name: push-code-repo
+description: "Evaluates the repository pushing skill against commit and quality constraints"
+assertions:
+  - type: "dependency-versions"
+    description: "Code pusher MUST verify that changed package manifests do NOT violate exact pinned dependencies"
+    enforce:
+      React: "18.x"
+      FastAPI: "0.115.x"
+  - type: "documentation-style"
+    description: "Code pusher MUST verify that new public functions contain Google-style docstrings or JSDoc prior to push"
+    check_type: "pre_push_docstring_validation"
+  - type: "dead-code-prevention"
+    description: "Code pusher MUST abort push if any console.log or print statements are detected in staged files"
+    forbidden:
+      - "print("
+      - "console.log("

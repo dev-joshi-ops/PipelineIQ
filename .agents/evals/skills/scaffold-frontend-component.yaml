@@ -1,0 +1,19 @@
+eval_name: scaffold-frontend-component
+description: "Evaluates standard frontend component scaffolding against agents.md directives"
+assertions:
+  - type: "dependency-versions"
+    description: "MUST strictly use exact pinned versions for frontend tools"
+    enforce:
+      React: "18.x"
+      TypeScript: "5.x"
+      Tailwind CSS: "3.x"
+      Vite: "5.x"
+  - type: "documentation-style"
+    description: "Generated frontend code MUST include proper JSDoc for exported functions and hooks"
+    regex_check: '/\*\*[\s\S]*?\@param[\s\S]*?\*/'
+  - type: "dead-code-prevention"
+    description: "Generated component MUST NOT leave trailing console logs or inline commented code"
+    forbidden:
+      - "console.log("
+      - "// TODO:"
+      - "/* commented out code */"

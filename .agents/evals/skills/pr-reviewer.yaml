@@ -1,0 +1,17 @@
+eval_name: pr-reviewer
+description: "Evaluates the PR review skill's enforcement of agents.md directives"
+assertions:
+  - type: "dependency-versions"
+    description: "Reviewer MUST flag dependency additions that violate the Supported Version Matrix"
+    enforce:
+      Node.js: "20.x LTS"
+      Python: "3.11.x | 3.12.x"
+  - type: "documentation-style"
+    description: "Reviewer MUST reject Python and TS changes lacking Google-style docstrings or JSDoc"
+    check_type: "docstring_validation_presence"
+  - type: "dead-code-prevention"
+    description: "Reviewer MUST explicitly reject PRs leaving print() or log() statements in committed files"
+    forbidden:
+      - "print("
+      - "console.log("
+      - "console.error("

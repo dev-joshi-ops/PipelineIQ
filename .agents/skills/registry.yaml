@@ -1,0 +1,94 @@
+version: 1
+canonical_instruction_file: "agents.md"
+compatibility_entrypoints:
+  - "agents.md"
+skills:
+  - name: "pr-reviewer"
+    path: ".agents/skills/pr-reviewer/SKILL.md"
+    summary: "Review MCP server changes against repository rules, protocol correctness, and CI/CD domain expectations."
+    triggers:
+      - "review this PR"
+      - "audit these code changes"
+      - "check this diff before merge"
+    consult:
+      - ".agents/rules/mcp-builder.md"
+      - ".agents/rules/cicd-expert.md"
+      - ".agents/rules/architect.md"
+      - ".agents/rules/security.md"
+      - ".agents/rules/qa.md"
+  - name: "performance-profiler"
+    path: ".agents/skills/performance-profiler/SKILL.md"
+    summary: "Run a repeatable MCP performance audit across startup, tool latency, provider calls, and large-log handling."
+    triggers:
+      - "profile this server"
+      - "investigate slow tool calls"
+      - "run a performance audit"
+    consult:
+      - ".agents/rules/mcp-builder.md"
+      - ".agents/rules/cicd-expert.md"
+      - ".agents/rules/architect.md"
+      - ".agents/rules/devops.md"
+  - name: "security-scanner"
+    path: ".agents/skills/security-scanner/SKILL.md"
+    summary: "Run a security audit across code, config, dependencies, tokens, outbound requests, and log redaction."
+    triggers:
+      - "run a security review"
+      - "audit tokens and secrets handling"
+      - "check this repo for security issues"
+    consult:
+      - ".agents/rules/mcp-builder.md"
+      - ".agents/rules/cicd-expert.md"
+      - ".agents/rules/security.md"
+      - ".agents/rules/devops.md"
+      - ".agents/rules/architect.md"
+      - ".agents/rules/qa.md"
+  - name: "scaffold-mcp-server"
+    path: ".agents/skills/scaffold-mcp-server/SKILL.md"
+    summary: "Create or extend an MCP server using the antigravity SDK with typed schemas and stdio-first transport."
+    triggers:
+      - "scaffold an mcp server"
+      - "add a new tool"
+      - "add a new resource"
+      - "extend the ci debugger server"
+    consult:
+      - ".agents/rules/mcp-builder.md"
+      - ".agents/rules/cicd-expert.md"
+      - ".agents/rules/security.md"
+      - ".agents/rules/qa.md"
+  - name: "push-code-repo"
+    path: ".agents/skills/push-code-repo/SKILL.md"
+    summary: "Push committed code to the remote repo safely."
+    triggers:
+      - "push this branch"
+      - "publish these commits"
+      - "push the code to the repo"
+    consult:
+      - ".agents/rules/devops.md"
+      - "agents.md"
+  - name: "codebase-scout"
+    path: ".agents/skills/codebase-scout/SKILL.md"
+    summary: "Deeply map and understand the MCP package layout, entrypoints, contracts, and release process."
+    triggers:
+      - "map this codebase"
+      - "explain the project architecture"
+      - "show me the core flow"
+      - "how do I develop locally?"
+      - "codebase discovery"
+      - "discover codebase"
+    consult:
+      - ".agents/rules/orchestrator.md"
+      - ".agents/rules/architect.md"
+      - "agents.md"
+  - name: "caveman"
+    path: ".agents/skills/caveman/SKILL.md"
+    summary: "Ultra-compressed communication mode to cut token usage. Speaking like smart caveman while keeping full technical accuracy."
+    triggers:
+      - "caveman mode"
+      - "talk like caveman"
+      - "use caveman"
+      - "less tokens"
+      - "be brief"
+      - "/caveman"
+    consult:
+      - "agents.md"
+
