@@ -4,9 +4,9 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "pipeline-iq"
-version = "0.1.1"
+version = "0.1.2"
 authors = [
-  { name="Dev Joshi", email="joshi.devops@example.com" },
+  { name="Dev Joshi", email="joshid647@gmail.com" },
 ]
 description = "A high-performance MCP server for CI/CD failure diagnosis"
 readme = "README.md"

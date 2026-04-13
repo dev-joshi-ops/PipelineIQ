@@ -107,12 +107,12 @@ Create a `.env` file in the root directory or export these variables:
 
 | Variable | Required | Default | Description |
 |----------|----------|---------|-------------|
-| `JENKINS_URL` | ✅ | — | Base URL of Jenkins server |
-| `JENKINS_USER` | ✅ | — | Jenkins username |
-| `JENKINS_TOKEN` | ✅ | — | Jenkins API token (read-only) |
-| `LOG_LEVEL` | ❌ | `INFO` | Logging verbosity (`DEBUG`, `INFO`, etc.) |
-| `MAX_LOG_LINES` | ❌ | `2000` | Max lines to retrieve from build log |
-| `REQUEST_TIMEOUT` | ❌ | `30` | HTTP request timeout in seconds |
+| `JENKINS_URL` | Yes | — | Base URL of Jenkins server |
+| `JENKINS_USER` | Yes | — | Jenkins username |
+| `JENKINS_TOKEN` | Yes | — | Jenkins API token (read-only) |
+| `LOG_LEVEL` | No | `INFO` | Logging verbosity (`DEBUG`, `INFO`, etc.) |
+| `MAX_LOG_LINES` | No | `2000` | Max lines to retrieve from build log |
+| `REQUEST_TIMEOUT` | No | `30` | HTTP request timeout in seconds |
 
 Example `.env`:
 ```env
@@ -185,7 +185,7 @@ pip install -e .
 ---
 
 ### ✍️ About the Author
-Built with ❤️ by a **DevOps Engineer (3+ years exp)** specializing in automation, cloud-native infrastructure, and developer experience.
+Built with <3 by Dev Joshi
 
 ---
 
