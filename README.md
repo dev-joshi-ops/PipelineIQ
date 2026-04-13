@@ -13,23 +13,6 @@ Stop hunting through Jenkins console output. PipelineIQ gives your LLM (Claude, 
 
 ---
 
-### 🏗️ Visual Architecture
-
-```mermaid
-graph TD
-    User([Developer]) --> Client[LLM Client / IDE]
-    Client -- "MCP Protocol" --> Server[PipelineIQ MCP Server]
-    Server -- "HTTPS / API" --> Jenkins[Jenkins API]
-    subgraph "Intelligent Processing"
-        Server -- "Regex Engine" --> Analysis[Log Pattern Matching]
-        Analysis -- "Secret Redaction" --> Sanitizer[Log Sanitizer]
-    end
-    Sanitizer --> Client
-    Client --> User
-```
-
----
-
 ### ✨ Core Features
 
 #### 🔍 Advanced Log Pattern Matching
