@@ -8,7 +8,7 @@ from pipeline_iq.tools.list_jobs import list_jenkins_jobs
 from pipeline_iq.tools.list_builds import list_jenkins_builds
 from pipeline_iq.tools.get_build_info import get_jenkins_build_info
 from pipeline_iq.resources.pattern_loader import get_pattern_loader
-from pipeline_iq.integrations.jenkins_client import get_jenkins_client
+from pipeline_iq.integrations import get_active_provider
 from pipeline_iq.schemas.jenkins import FolderRequest, BuildLogRequest
 
 from pipeline_iq import __version__
@@ -23,8 +23,7 @@ mcp = FastMCP("PipelineIQ", version=__version__)
 @safe_tool
 async def list_jobs(folder: str = ""):
     """
-    Lists Jenkins jobs, optionally within a specific folder.
-    Use this to discover available jobs for build log retrieval.
+    Lists jobs or resources, optionally within a specific folder/scope.
     """
     # Validation
     FolderRequest(folder=folder)
@@ -35,7 +34,7 @@ async def list_jobs(folder: str = ""):
 @safe_tool
 async def list_builds(job_name: str, count: int = 10):
     """
-    Lists the latest builds for a specific Jenkins job.
+    Lists the latest builds/runs for a specific job or resource.
     """
     # Validation & Bounding
     BuildLogRequest(job_name=job_name, build_id="1")  # Reusing for job_name check
@@ -47,7 +46,7 @@ async def list_builds(job_name: str, count: int = 10):
 @safe_tool
 async def get_build_info(job_name: str, build_id: str):
     """
-    Retrieves detailed metadata for a specific Jenkins build.
+    Retrieves detailed metadata for a specific build or run.
     """
     # Validation
     BuildLogRequest(job_name=job_name, build_id=build_id)
@@ -58,7 +57,7 @@ async def get_build_info(job_name: str, build_id: str):
 @safe_tool
 async def get_build_log(job_name: str, build_id: str):
     """
-    Retrieves and sanitizes the last 2000 lines of the console log for a Jenkins build.
+    Retrieves and sanitizes the terminal log for a build.
     """
     # Explicit validation
     BuildLogRequest(job_name=job_name, build_id=build_id)
@@ -69,7 +68,7 @@ async def get_build_log(job_name: str, build_id: str):
 @safe_tool
 async def analyze_failure(log_lines: list[str]):
     """
-    Analyzes Jenkins build log lines and returns detected failure patterns.
+    Analyzes build log lines and returns detected failure patterns.
     """
     # Input Bounding
     if len(log_lines) > 5000:
@@ -81,7 +80,7 @@ async def analyze_failure(log_lines: list[str]):
 @safe_tool
 async def get_suggestions(pattern_id: str):
     """
-    Returns actionable fix suggestions for a given Jenkins failure pattern ID.
+    Returns actionable fix suggestions for a given failure pattern ID.
     """
     return await get_fix_suggestions(pattern_id)
 
@@ -105,12 +104,12 @@ def get_patterns_config() -> str:
 def debug_failure_prompt(job_name: str, build_id: str):
     """Template for diagnosing a CI/CD build failure."""
     return f"""
-I need help diagnosing a build failure in Jenkins.
-Job: {job_name}
-Build ID: {build_id}
+I need help diagnosing a build failure in the CI/CD system.
+Resource: {job_name}
+Build/Run ID: {build_id}
 
 Please follow these steps:
-1. Fetch the build logs using `get_build_log`.
+1. Fetch the logs using `get_build_log`.
 2. Analyze the logs for failure patterns using `analyze_failure`.
 3. If patterns are found, get actionable suggestions using `get_suggestions`.
 4. Explain the root cause and provide clear fix instructions.
@@ -124,19 +123,21 @@ def main():
         mcp.run()
     finally:
         # Safe cleanup of singleton client session
-        client = get_jenkins_client()
-        if client._client is not None:
+        try:
+            client = get_active_provider()
+            # Check if it has a client property with _client (specific to current impl)
+            # or just call close() if it's implemented.
             import asyncio
 
-            try:
+            if hasattr(client, "close"):
                 loop = asyncio.get_event_loop()
                 if loop.is_running():
                     loop.create_task(client.close())
                 else:
                     loop.run_until_complete(client.close())
-            except Exception:
-                # Best effort cleanup
-                pass
+        except Exception:
+            # Best effort cleanup
+            pass
 
 
 if __name__ == "__main__":

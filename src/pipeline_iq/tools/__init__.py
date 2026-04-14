@@ -18,13 +18,13 @@ def safe_tool(func: Callable) -> Callable:
         except httpx.HTTPStatusError as e:
             code = e.response.status_code
             if code == 401:
-                msg = "Jenkins authentication failed. Please check your credentials."
+                msg = "CI/CD provider authentication failed. Please check your credentials."
             elif code == 403:
-                msg = "Permission denied. The Jenkins user lacks permission for this action."
+                msg = "Permission denied. The CI/CD user lacks permission for this action."
             elif code == 404:
-                msg = "The requested Jenkins resource (job or build) was not found."
+                msg = "The requested CI/CD resource (job or build) was not found."
             else:
-                msg = f"Jenkins API error: {code}. Check logs for details."
+                msg = f"CI/CD provider API error: {code}. Check logs for details."
 
             logger.error(f"HTTP {code} error in {func.__name__}: {e.response.text}")
             return ErrorResponse(code=f"HTTP_{code}", message=msg)

@@ -1,5 +1,5 @@
 import datetime
-from pipeline_iq.integrations.jenkins_client import get_jenkins_client
+from pipeline_iq.integrations import get_active_provider
 from pipeline_iq.schemas.jenkins import BuildListResponse, BuildSummary
 
 
@@ -7,8 +7,8 @@ async def list_jenkins_builds(job_name: str, count: int = 10) -> BuildListRespon
     """
     Lists the latest builds for a specific Jenkins job.
     """
-    client = get_jenkins_client()
-    raw_builds = await client.get_latest_builds(job_name, count)
+    client = get_active_provider()
+    raw_builds = await client.list_builds(job_name, count)
 
     builds = [
         BuildSummary(

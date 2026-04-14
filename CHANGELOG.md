@@ -12,6 +12,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Fail-Safe Decorator**: Added `@safe_tool` to prevent internal infrastructure leakage (URLs, stack traces) to LLM clients.
 - **Input Bounding**: Added size limits for log retrieval and build listing to prevent resource exhaustion.
 - **Sanitizer Unit Tests**: Added regression tests for automated log redaction.
+- **Multi-Provider Architecture**: Refactored the integration layer to support a pluggable architecture (Jenkins, GitHub Actions, GitLab CI).
+- **Provider Factory**: Implemented a dynamic factory to load CI providers based on server configuration.
+- **Generic CI Schemas**: Introduced base schemas for unified CI/CD entity representation.
 
 ### Fixed
 - **Thread Safety**: Refactored `JenkinsClient` as a thread-safe singleton.

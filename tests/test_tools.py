@@ -19,7 +19,7 @@ async def test_list_jenkins_jobs_sorting_and_limiting():
         for i in range(15)
     ]
 
-    with patch("pipeline_iq.tools.list_jobs.get_jenkins_client") as mock_get_client:
+    with patch("pipeline_iq.tools.list_jobs.get_active_provider") as mock_get_client:
         mock_client = MagicMock()
         mock_get_client.return_value = mock_client
         mock_client.list_jobs = AsyncMock(return_value=mock_jobs)

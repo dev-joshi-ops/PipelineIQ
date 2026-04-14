@@ -1,17 +1,11 @@
 import httpx
-from functools import lru_cache
 from typing import List, Dict, Any, Optional
 from loguru import logger
 from pipeline_iq.config import get_settings
+from pipeline_iq.integrations.base import BaseCIProvider
 
 
-@lru_cache()
-def get_jenkins_client() -> "JenkinsClient":
-    """Returns a cached JenkinsClient instance."""
-    return JenkinsClient()
-
-
-class JenkinsClient:
+class JenkinsClient(BaseCIProvider):
     """Persistent client for interacting with Jenkins API."""
 
     _client: Optional[httpx.AsyncClient] = None
@@ -82,9 +76,6 @@ class JenkinsClient:
                 }
                 jobs.append(job_meta)
 
-                # If it's a folder/multibranch, we could recursively list,
-                # but for an MCP tool, we'll let the user/LLM navigate.
-
             return jobs
         except httpx.HTTPStatusError as e:
             logger.error(
@@ -128,7 +119,7 @@ class JenkinsClient:
             )
             raise
 
-    async def get_latest_builds(self, job_name: str, count: int = 10) -> List[Dict[str, Any]]:
+    async def list_builds(self, job_name: str, count: int = 10) -> List[Dict[str, Any]]:
         """Fetch the latest builds for a specific job."""
         job_path = self._get_job_url_path(job_name)
         # Fetch build numbers, results, urls, and timestamps

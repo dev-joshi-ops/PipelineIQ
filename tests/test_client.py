@@ -8,7 +8,7 @@ from pipeline_iq.schemas.jenkins import BuildLogRequest
 
 @pytest.fixture
 def mock_settings():
-    with patch("pipeline_iq.integrations.jenkins_client.get_settings") as mock:
+    with patch("pipeline_iq.integrations.jenkins.client.get_settings") as mock:
         mock_val = MagicMock()
         mock_val.jenkins_url = "http://jenkins.test"
         mock_val.jenkins_user = "user"
@@ -21,7 +21,7 @@ def mock_settings():
 
 @pytest.mark.asyncio
 async def test_jenkins_client_get_build_log(mock_settings):
-    from pipeline_iq.integrations.jenkins_client import JenkinsClient
+    from pipeline_iq.integrations.jenkins.client import JenkinsClient
 
     client = JenkinsClient()
     job_name = "test-job"
@@ -39,7 +39,7 @@ async def test_jenkins_client_get_build_log(mock_settings):
 
 @pytest.mark.asyncio
 async def test_jenkins_client_get_build_info(mock_settings):
-    from pipeline_iq.integrations.jenkins_client import JenkinsClient
+    from pipeline_iq.integrations.jenkins.client import JenkinsClient
 
     client = JenkinsClient()
     job_name = "test-job"
@@ -72,7 +72,7 @@ def test_build_log_request_validation():
 
 @pytest.mark.asyncio
 async def test_jenkins_client_list_jobs(mock_settings):
-    from pipeline_iq.integrations.jenkins_client import JenkinsClient
+    from pipeline_iq.integrations.jenkins.client import JenkinsClient
 
     client = JenkinsClient()
 

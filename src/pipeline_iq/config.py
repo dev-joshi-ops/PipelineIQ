@@ -12,6 +12,8 @@ class Settings(BaseSettings):
     jenkins_user: str = Field(..., description="Username for Jenkins authentication")
     jenkins_token: SecretStr = Field(..., description="API Token for Jenkins authentication")
 
+    ci_provider: str = Field("jenkins", description="Active CI/CD provider (jenkins, github, gitlab)")
+
     # Optional settings with defaults
     request_timeout: int = Field(5, description="Timeout for Jenkins API requests in seconds")
     max_log_lines: int = Field(2000, description="Maximum number of log lines to retrieve")

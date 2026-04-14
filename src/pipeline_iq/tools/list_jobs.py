@@ -1,5 +1,5 @@
 import datetime
-from pipeline_iq.integrations.jenkins_client import get_jenkins_client
+from pipeline_iq.integrations import get_active_provider
 from pipeline_iq.schemas.jenkins import JobListResponse, JobMetadata
 
 
@@ -8,7 +8,7 @@ async def list_jenkins_jobs(folder: str = "") -> JobListResponse:
     Lists Jenkins jobs, optionally within a specific folder.
     Use this to discover available jobs for build log retrieval.
     """
-    client = get_jenkins_client()
+    client = get_active_provider()
     raw_jobs = await client.list_jobs(folder)
 
     # Sort jobs by last_build_at descending, putting None at the end
@@ -24,10 +24,11 @@ async def list_jenkins_jobs(folder: str = "") -> JobListResponse:
 
         jobs.append(
             JobMetadata(
+                id=j["name"],  # Using name as ID for Jenkins
                 name=j["name"],
                 full_name=j["full_name"],
                 url=j["url"],
-                is_foldered=j["is_foldered"],
+                is_container=j["is_foldered"],
                 last_build_at=last_build_at,
                 last_build_result=j.get("last_build_result"),
             )

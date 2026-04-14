@@ -1,7 +1,8 @@
+import re
+import datetime
 from typing import List, Optional, Dict
 from pydantic import BaseModel, Field, field_validator
-import datetime
-import re
+from .base import BaseResource, BaseBuild, BaseLogResponse, CIStatus
 
 # Reusable regex patterns for validation
 JOB_NAME_PATTERN = re.compile(r"^[a-zA-Z0-9_.\-/]+$")
@@ -15,6 +16,25 @@ ALLOWED_BUILD_TOKENS = {
 FOLDER_PATTERN = re.compile(r"^[a-zA-Z0-9_.\-/]*$")  # Allow empty
 
 
+def map_jenkins_status(result: Optional[str], building: bool = False) -> CIStatus:
+    """Maps Jenkins-specific build results to generic CIStatus."""
+    if building:
+        return CIStatus.IN_PROGRESS
+    if not result:
+        return CIStatus.UNKNOWN
+
+    res = result.upper()
+    if res == "SUCCESS":
+        return CIStatus.SUCCESS
+    if res == "FAILURE":
+        return CIStatus.FAILURE
+    if res == "ABORTED":
+        return CIStatus.CANCELLED
+    if res == "UNSTABLE":
+        return CIStatus.UNSTABLE
+    return CIStatus.UNKNOWN
+
+
 class ErrorResponse(BaseModel):
     """Unified error response for all tools."""
 
@@ -23,13 +43,10 @@ class ErrorResponse(BaseModel):
     details: Optional[Dict] = Field(None, description="Additional error context")
 
 
-class JobMetadata(BaseModel):
+class JobMetadata(BaseResource):
     """Metadata for a Jenkins job."""
 
-    name: str
-    full_name: str
-    url: str
-    is_foldered: bool = False
+    # Inherits id, name, full_name, url, is_container (mapped from is_foldered)
     last_build_at: Optional[datetime.datetime] = None
     last_build_result: Optional[str] = None
 
@@ -85,16 +102,12 @@ class FolderRequest(BaseModel):
         return v
 
 
-class BuildLogResponse(BaseModel):
+class BuildLogResponse(BaseLogResponse):
     """Response model for get_jenkins_build_log."""
 
-    job_name: str
-    build_id: str
-    lines: List[str]
+    # Inherits resource_id, build_id, lines, is_complete, status, retrieved_at
     total_lines_returned: int
-    is_build_complete: bool
     build_result: Optional[str]
-    retrieved_at: datetime.datetime = Field(default_factory=datetime.datetime.now)
 
 
 class FailurePatternMatch(BaseModel):
@@ -149,15 +162,10 @@ class BuildListResponse(BaseModel):
     count: int
 
 
-class BuildInfoResponse(BaseModel):
+class BuildInfoResponse(BaseBuild):
     """Detailed metadata for a specific build."""
 
-    job_name: str
-    number: int
-    result: Optional[str]
-    url: str
-    timestamp: datetime.datetime
-    duration: int = Field(..., description="Duration in milliseconds")
+    # Inherits build_id, resource_id, number, status, url, timestamp, duration_ms
     building: bool
     description: Optional[str] = None
     artifacts: List[Dict] = []
